@@ -1,0 +1,89 @@
+spring:
+  output:
+    ansi:
+      enabled: always
+  profiles:
+    active:
+      - h2-persistance
+
+---
+spring:
+  profiles: real-1
+  datasource:
+    url: jdbc:mysql://localhost:3307/dashboard
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: none
+    generate-ddl: true
+    show-sql: true
+
+---
+spring:
+  profiles: dev-1
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+---
+spring:
+  profiles: dev-2
+  jpa:
+    database: MYSQL
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    url: jdbc:mysql://mysql:3306/dashboard
+    username: dashboard_user
+    password: dashboard_pass
+    driver-class-name: com.mysql.jdbc.Driver
+
+---
+spring:
+  profiles: h2-persistance
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    url: jdbc:h2:file:./data/app_db2;DB_CLOSE_ON_EXIT=FALSE
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+server:
+  port: 8083
+---
+spring:
+  profiles: dev-h2-persistance
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    url: jdbc:h2:file:./data/app_db3;DB_CLOSE_ON_EXIT=FALSE
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+server:
+  port: ${PORT:${SERVER_PORT:0}}
