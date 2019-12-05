@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
-@EntityScan("demo.dublin.dashboard.models")
+@EntityScan("demo.dublin.dashboard")
 public class ApiApplication {
 
 	public static void main(String[] args) {

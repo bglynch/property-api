@@ -12,30 +12,30 @@ public class House {
     // == fields ==
     @Id
     private String adId;
+    private int price;
+    private String priceType;
     private String url;
 
-    private String area;
-//    private String county;
     private String address;
+    private String area;
     private String postcode;
-
-    private String propertyType;
-    private String bedrooms;
-    private String bathrooms;
-    private String floorArea;
-    private String priceType;
-    private int price;
-
-//    private String seller;
-//    private String sellerType;
-    private String sellingType;
-    private String propertyCategory;
-//    private String publishedDate;
+    private String county;
 
     private String longitude;
     private String latitude;
     private String berRating;
     private String berNumber;
+
+    private String propertyType;
+    private String bedrooms;
+    private String bathrooms;
+    private String floorArea;
+
+    private String seller;
+    private String sellerType;
+    private String sellingType;
+    private String propertyCategory;
+    private String publishedDate;
 
     private String photoLink;
     private String hasGarden;
@@ -49,7 +49,7 @@ public class House {
             String adId,
             String url,
             String area,
-//            String county,
+            String county,
             String address,
             String postcode,
             String propertyType,
@@ -58,11 +58,11 @@ public class House {
             String floorArea,
             String priceType,
             int price,
-//            String seller,
-//            String sellerType,
+            String seller,
+            String sellerType,
             String sellingType,
             String propertyCategory,
-//            String publishedDate,
+            String publishedDate,
             String longitude,
             String latitude,
             String berRating,
@@ -74,7 +74,7 @@ public class House {
         this.adId = adId;
         this.url = url;
         this.area = area;
-//        this.county = county;
+        this.county = county;
         this.address = address;
         this.postcode = postcode;
         this.propertyType = propertyType;
@@ -83,11 +83,11 @@ public class House {
         this.floorArea = floorArea;
         this.priceType = priceType;
         this.price = price;
-//        this.seller = seller;
-//        this.sellerType = sellerType;
+        this.seller = seller;
+        this.sellerType = sellerType;
         this.sellingType = sellingType;
         this.propertyCategory = propertyCategory;
-//        this.publishedDate = publishedDate;
+        this.publishedDate = publishedDate;
         this.longitude = longitude;
         this.latitude = latitude;
         this.berRating = berRating;

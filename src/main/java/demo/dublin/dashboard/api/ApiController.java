@@ -5,17 +5,15 @@ import demo.dublin.dashboard.models.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 
 @RestController
-@RequestMapping("/properties")
+@RequestMapping("/propertiess")
 public class ApiController {
 
     @Autowired
     private  HouseRepository houseRepository;
-
 
     @CrossOrigin
     @GetMapping("")
