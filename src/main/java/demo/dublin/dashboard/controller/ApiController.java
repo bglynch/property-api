@@ -1,7 +1,8 @@
-package demo.dublin.dashboard.api;
+package demo.dublin.dashboard.controller;
 
 import demo.dublin.dashboard.models.House;
 import demo.dublin.dashboard.models.Location;
+import demo.dublin.dashboard.repository.HouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import java.util.*;
 public class ApiController {
 
     @Autowired
-    private  HouseRepository houseRepository;
+    private HouseRepository houseRepository;
 
     @CrossOrigin
     @GetMapping("")

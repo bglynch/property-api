@@ -1,4 +1,4 @@
-package demo.dublin.dashboard.api;
+package demo.dublin.dashboard;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

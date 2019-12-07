@@ -1,4 +1,4 @@
-package demo.dublin.dashboard.api;
+package demo.dublin.dashboard.repository;
 
 import demo.dublin.dashboard.models.House;
 import org.springframework.data.jpa.repository.JpaRepository;
