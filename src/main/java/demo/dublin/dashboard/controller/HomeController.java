@@ -3,6 +3,7 @@ package demo.dublin.dashboard.controller;
 import demo.dublin.dashboard.models.Home;
 import demo.dublin.dashboard.models.dto.HomeDTO;
 import demo.dublin.dashboard.repository.HomeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Slf4j
 @CrossOrigin
 @RestController
 @RequestMapping("/properties")
@@ -34,9 +36,9 @@ public class HomeController {
     @GetMapping("/lite")
     public List<HomeDTO> getAllMin() {
         List<Home> list = (List<Home>) homeRepository.findAll();
-        HomeDTO home = new HomeDTO();
         List<HomeDTO> homeList = new ArrayList<>();
         for (Home h : list) {
+            HomeDTO home = new HomeDTO();
             home.setAdId(h.getAdId());
             home.setPrice(h.getPrice());
             home.setPublishedDate(h.getPublishedDate());
@@ -58,10 +60,9 @@ public class HomeController {
             home.setHasWalkInWardrobe(h.isHasWalkInWardrobe());
             home.setHasUnderfloorHeating(h.isHasUnderfloorHeating());
             home.setHasStarterHome(h.isHasStarterHome());
-
             homeList.add(home);
-
         }
+
         return homeList;
 
     }
