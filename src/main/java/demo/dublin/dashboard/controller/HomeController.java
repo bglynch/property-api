@@ -35,8 +35,11 @@ public class HomeController {
 
     @GetMapping("/lite")
     public List<HomeDTO> getAllMin() {
+
         List<Home> list = (List<Home>) homeRepository.findAll();
+
         List<HomeDTO> homeList = new ArrayList<>();
+
         for (Home h : list) {
             HomeDTO home = new HomeDTO();
             home.setAdId(h.getAdId());
