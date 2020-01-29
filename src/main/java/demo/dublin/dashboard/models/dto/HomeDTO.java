@@ -1,5 +1,6 @@
 package demo.dublin.dashboard.models.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data

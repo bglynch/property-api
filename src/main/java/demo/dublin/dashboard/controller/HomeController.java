@@ -1,6 +1,7 @@
 package demo.dublin.dashboard.controller;
 
 import demo.dublin.dashboard.models.Home;
+import demo.dublin.dashboard.models.Location;
 import demo.dublin.dashboard.models.dto.HomeDTO;
 import demo.dublin.dashboard.repository.HomeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +71,21 @@ public class HomeController {
 
     }
 
+    @GetMapping("/locations")
+    public List<List> getLocations() {
+        List<List> list = (List<List>) homeRepository.fetchLocations();
 
+        ArrayList locationList = new ArrayList();
+        for (List l : list) {
+            Location location = new Location();
+            location.setAdId((String)l.get(0));
+            location.setLongitude((String)l.get(1));
+            location.setLatitude((String)l.get(2));
+            location.setIsApartment((String)l.get(3));
+            locationList.add(location);
+
+        }
+        return locationList;
+    }
 
 }

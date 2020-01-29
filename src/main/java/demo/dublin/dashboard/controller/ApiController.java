@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+// *********************************************************
+// This controller is deprecated - please use HomeController
+// *********************************************************
 
 @RestController
 @RequestMapping("/propertiess")

@@ -5,6 +5,10 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+// *********************************************************
+// This controller is deprecated - please use Home model
+// *********************************************************
+
 @Data
 @Entity
 public class House {

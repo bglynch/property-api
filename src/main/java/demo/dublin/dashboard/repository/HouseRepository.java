@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.lang.reflect.Array;
 import java.util.List;
 
+// *********************************************************
+// This controller is deprecated - please use HomeRepository
+// *********************************************************
+
 @CrossOrigin
 @Repository
 public interface HouseRepository extends JpaRepository<House, String> {

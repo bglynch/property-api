@@ -67,9 +67,7 @@ public class Home {
     @Column(columnDefinition = "boolean default false")
     boolean hasStarterHome;
 
-
     @Column(columnDefinition = "boolean default false")
     boolean manuallyUpdated;
-
 
 }

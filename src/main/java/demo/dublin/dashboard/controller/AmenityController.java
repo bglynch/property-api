@@ -48,10 +48,7 @@ public class AmenityController {
     }
 
     @GetMapping("/creche")
-    public List<Amenity> getCreche() {
-        return amenityRepository.findByType("creche");
-
-    }
+    public List<Amenity> getCreche() { return amenityRepository.findByType("creche"); }
 
     @GetMapping("/swimming-pool")
     public List<Amenity> getPool() {
