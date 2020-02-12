@@ -29,6 +29,11 @@ public class HomeController {
         return localities;
     }
 
+    @GetMapping("/v3")
+    public List getThings() {
+        return homeRepository.fetchThings();
+    }
+
     @GetMapping("")
     public Iterable<Home> getAll() {
         return homeRepository.findAll();
@@ -41,8 +46,20 @@ public class HomeController {
 
         List<HomeDTO> homeList = new ArrayList<>();
 
+//        Map<String, Boolean> myMap = new HashMap<>();
+//        myMap.put("true", true);
+
         for (Home h : list) {
             HomeDTO home = new HomeDTO();
+            Map<String, Boolean> keywords = new HashMap<>();
+            keywords.put("parking", h.isHasParking());
+            keywords.put("garden", h.isHasGarden());
+            keywords.put("southFacingRear", h.isHasSouthFacingRear());
+            keywords.put("enSuite", h.isHasEnSuite());
+            keywords.put("underFloorHeating", h.isHasUnderfloorHeating());
+            keywords.put("walkInWardrobe", h.isHasWalkInWardrobe());
+            keywords.put("starterHome", h.isHasStarterHome());
+
             home.setAdId(h.getAdId());
             home.setPrice(h.getPrice());
             home.setPublishedDate(h.getPublishedDate());
@@ -57,22 +74,19 @@ public class HomeController {
             home.setBedrooms(h.getBedrooms());
             home.setFloorArea(h.getFloorArea());
             home.setBerRating(h.getBerRating());
-            home.setHasParking(h.isHasParking());
-            home.setHasGarden(h.isHasGarden());
-            home.setHasSouthFacingRear(h.isHasSouthFacingRear());
-            home.setHasEnSuite(h.isHasEnSuite());
-            home.setHasWalkInWardrobe(h.isHasWalkInWardrobe());
-            home.setHasUnderfloorHeating(h.isHasUnderfloorHeating());
-            home.setHasStarterHome(h.isHasStarterHome());
+//            home.setHasParking(h.isHasParking());
+//            home.setHasGarden(h.isHasGarden());
+
             if (home.getFloorArea()>0)
                 home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
+
+            home.setKeywords(keywords);
             homeList.add(home);
         }
 
         homeList.sort(Comparator.comparingInt(HomeDTO::getPrice));
 
         return homeList;
-
     }
 
     @GetMapping("/locations")

@@ -19,4 +19,7 @@ public interface HomeRepository extends JpaRepository<Home, String> {
 
     @Query("SELECT h.adId, h.longitude, h.latitude, h.propertyType FROM Home h")
     List<List> fetchLocations();
+
+    @Query("SELECT h.postcode, h.price, h.floorArea FROM Home h WHERE h.floorArea > 0")
+    List fetchThings();
 }
