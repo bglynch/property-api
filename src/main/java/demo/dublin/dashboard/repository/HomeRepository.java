@@ -14,8 +14,8 @@ import java.util.List;
 @Repository
 public interface HomeRepository extends JpaRepository<Home, String> {
 
-    @Query("select h.locality from Home h")
-    Collection<Home> getAllLocalitys();
+    @Query("select DISTINCT h.locality from Home h")
+    List<String> getAllLocalitys();
 
     @Query("SELECT h.adId, h.longitude, h.latitude, h.propertyType FROM Home h")
     List<List> fetchLocations();

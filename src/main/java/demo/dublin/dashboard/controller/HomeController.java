@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @CrossOrigin
@@ -24,9 +22,11 @@ public class HomeController {
     @Autowired
     private HomeRepository homeRepository;
 
-    @GetMapping("/v2")
-    public Collection getLocalities() {
-        return homeRepository.getAllLocalitys();
+    @GetMapping("/localities")
+    public List<String> getLocalities() {
+        List localities = homeRepository.getAllLocalitys();
+        Collections.sort(localities);
+        return localities;
     }
 
     @GetMapping("")
@@ -66,6 +66,8 @@ public class HomeController {
             home.setHasStarterHome(h.isHasStarterHome());
             homeList.add(home);
         }
+
+        homeList.sort(Comparator.comparingInt(HomeDTO::getPrice));
 
         return homeList;
 
