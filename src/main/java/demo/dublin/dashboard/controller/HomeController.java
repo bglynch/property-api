@@ -64,6 +64,8 @@ public class HomeController {
             home.setHasWalkInWardrobe(h.isHasWalkInWardrobe());
             home.setHasUnderfloorHeating(h.isHasUnderfloorHeating());
             home.setHasStarterHome(h.isHasStarterHome());
+            if (home.getFloorArea()>0)
+                home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
             homeList.add(home);
         }
 
