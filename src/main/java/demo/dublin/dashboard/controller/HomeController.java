@@ -43,11 +43,24 @@ public class HomeController {
     public List<HomeDTO> getAllMin() {
 
         List<Home> list = (List<Home>) homeRepository.findAll();
-
         List<HomeDTO> homeList = new ArrayList<>();
 
-//        Map<String, Boolean> myMap = new HashMap<>();
-//        myMap.put("true", true);
+        // ============ hacky price per sq metre for all properties
+        List<Long> medianPricePerSqMetre = new ArrayList<>();
+        for (Home h : list) {
+            if (h.getFloorArea()>30)
+                medianPricePerSqMetre.add(Math.round(h.getPrice() / h.getFloorArea()));
+        }
+        Collections.sort(medianPricePerSqMetre);
+        Long[] numArray = medianPricePerSqMetre.toArray(new Long[medianPricePerSqMetre.size()]);
+        double median;
+        if (medianPricePerSqMetre.size() % 2 == 0)
+            median = ((double)numArray[numArray.length/2] + (double)numArray[numArray.length/2 - 1])/2;
+        else
+            median = (double) numArray[numArray.length/2];
+        // ============
+
+
 
         for (Home h : list) {
             HomeDTO home = new HomeDTO();
@@ -79,7 +92,7 @@ public class HomeController {
 
             if (home.getFloorArea()>0)
                 home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
-
+            home.setLocalityPricePerSqMetre(median);
             home.setKeywords(keywords);
             homeList.add(home);
         }
