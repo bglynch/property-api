@@ -1,5 +1,6 @@
 package demo.dublin.dashboard.controller;
 
+import demo.dublin.dashboard.functions.HouseFunctions;
 import demo.dublin.dashboard.models.Home;
 import demo.dublin.dashboard.models.Location;
 import demo.dublin.dashboard.models.dto.HomeDTO;
@@ -45,42 +46,44 @@ public class HomeController {
         List<Home> list = (List<Home>) homeRepository.findAll();
         List<HomeDTO> homeList = new ArrayList<>();
 
-        // ============ hacky price per sq metre for all properties
-        List<Long> allMedianPricePerSqMetre = new ArrayList<>();
-        Map<String, List<Long>> postcodeMedianPricePerSqMetre = new HashMap<>();
+        // ============ Create List of All Median £/m2 and Map of Postcode £/m2
+        List<Integer> allMedianPricePerSqMetre = new ArrayList<>();
+        Map<String, List<Integer>> postcodeMedianPricePerSqMetre = new HashMap<>();
         for (Home h : list) {
             if (h.getFloorArea()>30) {
-                Long ppsm = Math.round(h.getPrice() / h.getFloorArea());
+                Integer ppsm = (int) Math.round(h.getPrice() / h.getFloorArea());
                 // all houses
                 allMedianPricePerSqMetre.add(ppsm);
                 // postcodes
                 if (!postcodeMedianPricePerSqMetre.containsKey(h.getPostcode())) {
-                    postcodeMedianPricePerSqMetre.put(h.getPostcode(), new ArrayList<Long>());
+                    postcodeMedianPricePerSqMetre.put(h.getPostcode(), new ArrayList<>());
                 }
                 postcodeMedianPricePerSqMetre.get(h.getPostcode()).add(ppsm);
             }
         }
 
-        Collections.sort(allMedianPricePerSqMetre);
-        Long[] numArray = allMedianPricePerSqMetre.toArray(new Long[allMedianPricePerSqMetre.size()]);
-        double median;
-        if (allMedianPricePerSqMetre.size() % 2 == 0)
-            median = ((double)numArray[numArray.length/2] + (double)numArray[numArray.length/2 - 1])/2;
-        else
-            median = (double) numArray[numArray.length/2];
+//        Collections.sort(allMedianPricePerSqMetre);
+//        Long[] numArray = allMedianPricePerSqMetre.toArray(new Long[allMedianPricePerSqMetre.size()]);
+//        double median;
+//        if (allMedianPricePerSqMetre.size() % 2 == 0)
+//            median = ((double)numArray[numArray.length/2] + (double)numArray[numArray.length/2 - 1])/2;
+//        else
+//            median = (double) numArray[numArray.length/2];
         // ============
 
+        Integer median = new HouseFunctions().calculateMedian(allMedianPricePerSqMetre);
+
         //============= price per sq metre of postcode
-        for (Map.Entry<String, List<Long>> entry : postcodeMedianPricePerSqMetre.entrySet()) {
+        for (Map.Entry<String, List<Integer>> entry : postcodeMedianPricePerSqMetre.entrySet()) {
             System.out.println(entry.getKey() + "/" + entry.getValue());
             Collections.sort(entry.getValue());
-
         }
 
 
         for (Home h : list) {
             HomeDTO home = new HomeDTO();
-            Map<String, Boolean> keywords = new HashMap<>();
+            Map<String, Boolean> keywords =
+                new HashMap<>();
             keywords.put("parking", h.isHasParking());
             keywords.put("garden", h.isHasGarden());
             keywords.put("southFacingRear", h.isHasSouthFacingRear());
@@ -89,13 +92,16 @@ public class HomeController {
             keywords.put("walkInWardrobe", h.isHasWalkInWardrobe());
             keywords.put("starterHome", h.isHasStarterHome());
 
+            List<Integer> postcodeMedPricePerM2 =
+                postcodeMedianPricePerSqMetre.get(h.getPostcode());
             // get ppsm for postcode
-            Long[] numArray2 = postcodeMedianPricePerSqMetre.get(h.getPostcode()).toArray(new Long[postcodeMedianPricePerSqMetre.get(h.getPostcode()).size()]);
-            Double median2;
-            if (postcodeMedianPricePerSqMetre.get(h.getPostcode()).size() % 2 == 0)
-                median2 = ((double)numArray2[numArray2.length/2] + (double)numArray2[numArray2.length/2 - 1])/2;
-            else
-                median2 = (double) numArray2[numArray2.length/2];
+//            Long[] numArray2 = postcodeMedianPricePerSqMetre.get(h.getPostcode()).toArray(new Long[postcodeMedianPricePerSqMetre.get(h.getPostcode()).size()]);
+//            Double median2;
+//            if (postcodeMedianPricePerSqMetre.get(h.getPostcode()).size() % 2 == 0)
+//                median2 = ((double)numArray2[numArray2.length/2] + (double)numArray2[numArray2.length/2 - 1])/2;
+//            else
+//                median2 = (double) numArray2[numArray2.length/2];
+
 
             home.setAdId(h.getAdId());
             home.setPrice(h.getPrice());
@@ -111,7 +117,7 @@ public class HomeController {
             home.setBedrooms(h.getBedrooms());
             home.setFloorArea(h.getFloorArea());
             home.setBerRating(h.getBerRating());
-            home.setPostcodePricePerSqMetre(median2);
+            home.setPostcodePricePerSqMetre(new HouseFunctions().calculateMedian(postcodeMedPricePerM2));
 
             if (home.getFloorArea()>0)
                 home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));

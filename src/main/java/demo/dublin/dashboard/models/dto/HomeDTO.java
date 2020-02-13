@@ -26,7 +26,7 @@ public class HomeDTO {
     private int bedrooms;
     private double floorArea = 0.0;
     private double pricePerSqMetre;
-    private double allPricePerSqMetre;
+    private int allPricePerSqMetre;
     private double postcodePricePerSqMetre;
 
     private String berRating;
