@@ -28,6 +28,7 @@ public class HomeDTO {
     private double pricePerSqMetre;
     private int allPricePerSqMetre;
     private double postcodePricePerSqMetre;
+    private int priceDifference;
 
     private String berRating;
 

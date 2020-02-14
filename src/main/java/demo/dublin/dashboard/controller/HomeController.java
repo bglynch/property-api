@@ -118,11 +118,18 @@ public class HomeController {
             home.setFloorArea(h.getFloorArea());
             home.setBerRating(h.getBerRating());
             home.setPostcodePricePerSqMetre(new HouseFunctions().calculateMedian(postcodeMedPricePerM2));
-
-            if (home.getFloorArea()>0)
-                home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
             home.setAllPricePerSqMetre(median);
+
+            if (home.getFloorArea()>0){
+                home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
+                home.setPriceDifference(
+                    (int) (((home.getPricePerSqMetre() / home.getPostcodePricePerSqMetre())*100)-100)*-1
+                );
+            }
             home.setKeywords(keywords);
+
+
+
             homeList.add(home);
         }
 
