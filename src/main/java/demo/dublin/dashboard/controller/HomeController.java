@@ -101,8 +101,6 @@ public class HomeController {
 //                median2 = ((double)numArray2[numArray2.length/2] + (double)numArray2[numArray2.length/2 - 1])/2;
 //            else
 //                median2 = (double) numArray2[numArray2.length/2];
-
-
             home.setAdId(h.getAdId());
             home.setPrice(h.getPrice());
             home.setPublishedDate(h.getPublishedDate());
@@ -114,6 +112,7 @@ public class HomeController {
             home.setLatitude(h.getLatitude());
             home.setPrimaryPhoto(h.getPrimaryPhoto());
             home.setPropertyType(h.getPropertyType());
+            home.setBathrooms(h.getBathrooms());
             home.setBedrooms(h.getBedrooms());
             home.setFloorArea(h.getFloorArea());
             home.setBerRating(h.getBerRating());
