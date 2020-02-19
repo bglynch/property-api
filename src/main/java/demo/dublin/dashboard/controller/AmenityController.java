@@ -55,4 +55,13 @@ public class AmenityController {
         return amenityRepository.findByType("swimming pool");
     }
 
+    @GetMapping("/luas")
+    public List<Amenity> getLuas() { return amenityRepository.findByType("luas"); }
+
+    @GetMapping("/train")
+    public List<Amenity> getTrain() { return amenityRepository.findByType("train"); }
+
+    @GetMapping("/dublin-bikes")
+    public List<Amenity> getDublinBikes() { return amenityRepository.findByType("dublin-bikes"); }
+
 }

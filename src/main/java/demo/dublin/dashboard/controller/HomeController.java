@@ -94,13 +94,6 @@ public class HomeController {
 
             List<Integer> postcodeMedPricePerM2 =
                 postcodeMedianPricePerSqMetre.get(h.getPostcode());
-            // get ppsm for postcode
-//            Long[] numArray2 = postcodeMedianPricePerSqMetre.get(h.getPostcode()).toArray(new Long[postcodeMedianPricePerSqMetre.get(h.getPostcode()).size()]);
-//            Double median2;
-//            if (postcodeMedianPricePerSqMetre.get(h.getPostcode()).size() % 2 == 0)
-//                median2 = ((double)numArray2[numArray2.length/2] + (double)numArray2[numArray2.length/2 - 1])/2;
-//            else
-//                median2 = (double) numArray2[numArray2.length/2];
             home.setAdId(h.getAdId());
             home.setPrice(h.getPrice());
             home.setPublishedDate(h.getPublishedDate());
