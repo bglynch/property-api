@@ -64,4 +64,7 @@ public class AmenityController {
     @GetMapping("/dublin-bikes")
     public List<Amenity> getDublinBikes() { return amenityRepository.findByType("dublin-bikes"); }
 
+    @GetMapping("/metro-link")
+    public List<Amenity> getMetroLink() { return amenityRepository.findByType("MetroLink"); }
+
 }
