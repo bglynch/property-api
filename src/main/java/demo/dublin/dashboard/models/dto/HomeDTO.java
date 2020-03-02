@@ -30,6 +30,8 @@ public class HomeDTO {
     private int priceDifference;
 
     private String berRating;
+    private String streetView;
+    private String propertyPriceRegister;
 
     Map<String, Boolean> keywords;
 

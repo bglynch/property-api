@@ -71,7 +71,7 @@ public class HomeController {
 //            median = (double) numArray[numArray.length/2];
         // ============
 
-        Integer median = new HouseFunctions().calculateMedian(allMedianPricePerSqMetre);
+        Integer median = HouseFunctions.calculateMedian(allMedianPricePerSqMetre);
 
         //============= price per sq metre of postcode
         for (Map.Entry<String, List<Integer>> entry : postcodeMedianPricePerSqMetre.entrySet()) {
@@ -109,8 +109,11 @@ public class HomeController {
             home.setBedrooms(h.getBedrooms());
             home.setFloorArea(h.getFloorArea());
             home.setBerRating(h.getBerRating());
-            home.setPostcodePricePerSqMetre(new HouseFunctions().calculateMedian(postcodeMedPricePerM2));
+            home.setPostcodePricePerSqMetre(HouseFunctions.calculateMedian(postcodeMedPricePerM2));
             home.setAllPricePerSqMetre(median);
+//            home.setStreetView("https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint="+h.getLongitude()+","+h.getLatitude());
+            home.setStreetView("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint="+h.getLatitude()+","+h.getLongitude());
+            home.setPropertyPriceRegister("https://propertypriceregisterireland.com/?action=search&county=6&address=" + HouseFunctions.ExtractStreet(h.getAddress(), h.getLocality()));
 
             if (home.getFloorArea()>0){
                 home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
