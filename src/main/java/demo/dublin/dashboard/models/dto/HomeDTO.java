@@ -14,6 +14,8 @@ public class HomeDTO {
     private String address;
     private String locality;
     private String postcode;
+    private String eircode_rk;
+
 
     private String longitude;
     private String latitude;

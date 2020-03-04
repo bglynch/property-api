@@ -101,6 +101,7 @@ public class HomeController {
             home.setAddress(h.getAddress());
             home.setLocality(h.getLocality());
             home.setPostcode(h.getPostcode());
+            home.setEircode_rk(h.getEircode_rk());
             home.setLongitude(h.getLongitude());
             home.setLatitude(h.getLatitude());
             home.setPrimaryPhoto(h.getPrimaryPhoto());

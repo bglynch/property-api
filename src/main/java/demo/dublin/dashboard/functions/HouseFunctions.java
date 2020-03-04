@@ -33,7 +33,6 @@ public class HouseFunctions {
     address = address.replaceAll("[, ]+$", "");
     if (address.contains(",")) {
       address = address.split(",")[address.split(",").length - 1].trim();    // get last item in address
-
     }
     address = address.replaceAll("'", "");
     return ExtractStreet(address);
@@ -41,9 +40,9 @@ public class HouseFunctions {
 
   static String ExtractStreet(String address) {
     address = address.replaceAll("^\\d{1,3}(-\\d{1,3})? ", ""); // remove number from start of string
-    address = address.replaceAll("Apartments", "").trim(); // remove number from start of string
-    address = address.replaceAll("\\\\", "").trim(); // remove number from start of string
-    address = address.replaceAll("(\\(.+\\))", "").trim(); // remove number from start of string
+    address = address.replaceAll("Apartments", "").trim();      // remove number from start of string
+    address = address.replaceAll("\\\\", "").trim();            // remove number from start of string
+    address = address.replaceAll("(\\(.+\\))", "").trim();      // remove number from start of string
     return address;
   }
 

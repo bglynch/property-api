@@ -23,6 +23,7 @@ public class Home {
     private String postcode;
     private String county;
     private String eircode;
+    private String eircode_rk;
 
     private String longitude;
     private String latitude;
