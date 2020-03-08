@@ -20,47 +20,54 @@ import java.util.*;
 @RequestMapping("/properties")
 public class HomeController {
 
-    @Autowired
-    private HomeRepository homeRepository;
+  @Autowired
+  private HomeRepository homeRepository;
 
-    @GetMapping("/localities")
-    public List<String> getLocalities() {
-        List localities = homeRepository.getAllLocalitys();
-        Collections.sort(localities);
-        return localities;
-    }
+  @GetMapping("/localities")
+  public List<String> getLocalities() {
+    List localities = homeRepository.getAllLocalitys();
+    Collections.sort(localities);
+    return localities;
+  }
 
-    @GetMapping("/v3")
-    public List getThings() {
-        return homeRepository.fetchThings();
-    }
+  @GetMapping("/postcodes")
+  public List<String> getPostcodes() {
+    List postcodes = homeRepository.getAllPostcodes();
+    Collections.sort(postcodes);
+    return postcodes;
+  }
 
-    @GetMapping("")
-    public Iterable<Home> getAll() {
-        return homeRepository.findAll();
-    }
+  @GetMapping("/v3")
+  public List getThings() {
+    return homeRepository.fetchThings();
+  }
 
-    @GetMapping("/lite")
-    public List<HomeDTO> getAllMin() {
+  @GetMapping("")
+  public Iterable<Home> getAll() {
+    return homeRepository.findAll();
+  }
 
-        List<Home> list = (List<Home>) homeRepository.findAll();
-        List<HomeDTO> homeList = new ArrayList<>();
+  @GetMapping("/lite")
+  public List<HomeDTO> getAllMin() {
 
-        // ============ Create List of All Median £/m2 and Map of Postcode £/m2
-        List<Integer> allMedianPricePerSqMetre = new ArrayList<>();
-        Map<String, List<Integer>> postcodeMedianPricePerSqMetre = new HashMap<>();
-        for (Home h : list) {
-            if (h.getFloorArea()>30) {
-                Integer ppsm = (int) Math.round(h.getPrice() / h.getFloorArea());
-                // all houses
-                allMedianPricePerSqMetre.add(ppsm);
-                // postcodes
-                if (!postcodeMedianPricePerSqMetre.containsKey(h.getPostcode())) {
-                    postcodeMedianPricePerSqMetre.put(h.getPostcode(), new ArrayList<>());
-                }
-                postcodeMedianPricePerSqMetre.get(h.getPostcode()).add(ppsm);
-            }
+    List<Home> list = (List<Home>) homeRepository.findAll();
+    List<HomeDTO> homeList = new ArrayList<>();
+
+    // ============ Create List of All Median £/m2 and Map of Postcode £/m2
+    List<Integer> allMedianPricePerSqMetre = new ArrayList<>();
+    Map<String, List<Integer>> postcodeMedianPricePerSqMetre = new HashMap<>();
+    for (Home h : list) {
+      if (h.getFloorArea() > 30 && h.getPrice() > 20000) {
+        Integer ppsm = (int) Math.round(h.getPrice() / h.getFloorArea());
+        // all houses
+        allMedianPricePerSqMetre.add(ppsm);
+        // postcodes
+        if (!postcodeMedianPricePerSqMetre.containsKey(h.getPostcode())) {
+          postcodeMedianPricePerSqMetre.put(h.getPostcode(), new ArrayList<>());
         }
+        postcodeMedianPricePerSqMetre.get(h.getPostcode()).add(ppsm);
+      }
+    }
 
 //        Collections.sort(allMedianPricePerSqMetre);
 //        Long[] numArray = allMedianPricePerSqMetre.toArray(new Long[allMedianPricePerSqMetre.size()]);
@@ -69,86 +76,84 @@ public class HomeController {
 //            median = ((double)numArray[numArray.length/2] + (double)numArray[numArray.length/2 - 1])/2;
 //        else
 //            median = (double) numArray[numArray.length/2];
-        // ============
+    // ============
 
-        Integer median = HouseFunctions.calculateMedian(allMedianPricePerSqMetre);
+    Integer median = HouseFunctions.calculateMedian(allMedianPricePerSqMetre);
 
-        //============= price per sq metre of postcode
-        for (Map.Entry<String, List<Integer>> entry : postcodeMedianPricePerSqMetre.entrySet()) {
-            System.out.println(entry.getKey() + "/" + entry.getValue());
-            Collections.sort(entry.getValue());
-        }
-
-
-        for (Home h : list) {
-            HomeDTO home = new HomeDTO();
-            Map<String, Boolean> keywords =
-                new HashMap<>();
-            keywords.put("parking", h.isHasParking());
-            keywords.put("garden", h.isHasGarden());
-            keywords.put("southFacingRear", h.isHasSouthFacingRear());
-            keywords.put("enSuite", h.isHasEnSuite());
-            keywords.put("underFloorHeating", h.isHasUnderfloorHeating());
-            keywords.put("walkInWardrobe", h.isHasWalkInWardrobe());
-            keywords.put("starterHome", h.isHasStarterHome());
-
-            List<Integer> postcodeMedPricePerM2 =
-                postcodeMedianPricePerSqMetre.get(h.getPostcode());
-            home.setAdId(h.getAdId());
-            home.setPrice(h.getPrice());
-            home.setPublishedDate(h.getPublishedDate());
-            home.setUrl(h.getUrl());
-            home.setAddress(h.getAddress());
-            home.setLocality(h.getLocality());
-            home.setPostcode(h.getPostcode());
-            home.setEircode_rk(h.getEircode_rk());
-            home.setLongitude(h.getLongitude());
-            home.setLatitude(h.getLatitude());
-            home.setPrimaryPhoto(h.getPrimaryPhoto());
-            home.setPropertyType(h.getPropertyType());
-            home.setBathrooms(h.getBathrooms());
-            home.setBedrooms(h.getBedrooms());
-            home.setFloorArea(h.getFloorArea());
-            home.setBerRating(h.getBerRating());
-            home.setPostcodePricePerSqMetre(HouseFunctions.calculateMedian(postcodeMedPricePerM2));
-            home.setAllPricePerSqMetre(median);
-//            home.setStreetView("https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint="+h.getLongitude()+","+h.getLatitude());
-            home.setStreetView("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint="+h.getLatitude()+","+h.getLongitude());
-            home.setPropertyPriceRegister("https://propertypriceregisterireland.com/?action=search&county=6&address=" + HouseFunctions.ExtractStreet(h.getAddress(), h.getLocality()));
-
-            if (home.getFloorArea()>0){
-                home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
-                home.setPriceDifference(
-                    (int) (((home.getPricePerSqMetre() / home.getPostcodePricePerSqMetre())*100)-100)*-1
-                );
-            }
-            home.setKeywords(keywords);
-
-
-
-            homeList.add(home);
-        }
-
-        homeList.sort(Comparator.comparingInt(HomeDTO::getPrice));
-
-        return homeList;
+    //============= price per sq metre of postcode
+    for (Map.Entry<String, List<Integer>> entry : postcodeMedianPricePerSqMetre.entrySet()) {
+//            System.out.println(entry.getKey() + "/" + entry.getValue());
+      Collections.sort(entry.getValue());
     }
 
-    @GetMapping("/locations")
-    public List<List> getLocations() {
-        List<List> list = (List<List>) homeRepository.fetchLocations();
 
-        ArrayList locationList = new ArrayList();
-        for (List l : list) {
-            Location location = new Location();
-            location.setAdId((String)l.get(0));
-            location.setLongitude((String)l.get(1));
-            location.setLatitude((String)l.get(2));
-            location.setIsApartment((String)l.get(3));
-            locationList.add(location);
+    for (Home h : list) {
+      HomeDTO home = new HomeDTO();
+      Map<String, Boolean> keywords =
+          new HashMap<>();
+      keywords.put("parking", h.isHasParking());
+      keywords.put("garden", h.isHasGarden());
+      keywords.put("southFacingRear", h.isHasSouthFacingRear());
+      keywords.put("enSuite", h.isHasEnSuite());
+      keywords.put("underFloorHeating", h.isHasUnderfloorHeating());
+      keywords.put("walkInWardrobe", h.isHasWalkInWardrobe());
+      keywords.put("starterHome", h.isHasStarterHome());
 
-        }
-        return locationList;
+      List<Integer> postcodeMedPricePerM2 = postcodeMedianPricePerSqMetre.get(h.getPostcode());
+      home.setAdId(h.getAdId());
+      home.setPrice(h.getPrice());
+      home.setPublishedDate(h.getPublishedDate());
+      home.setUrl(h.getUrl());
+      home.setAddress(h.getAddress());
+      home.setLocality(h.getLocality());
+      home.setPostcode(h.getPostcode());
+      home.setEircode_rk(h.getEircode_rk());
+      home.setLongitude(h.getLongitude());
+      home.setLatitude(h.getLatitude());
+      home.setPrimaryPhoto(h.getPrimaryPhoto());
+      home.setPropertyType(h.getPropertyType());
+      home.setBathrooms(h.getBathrooms());
+      home.setBedrooms(h.getBedrooms());
+      home.setFloorArea(h.getFloorArea());
+      home.setBerRating(h.getBerRating());
+      home.setPostcodePricePerSqMetre(HouseFunctions.calculateMedian(postcodeMedPricePerM2));
+      home.setAllPricePerSqMetre(median);
+      home.setStreetView("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + h.getLatitude() + "," + h.getLongitude());
+      home.setPropertyPriceRegister("https://propertypriceregisterireland.com/?action=search&county=6&address=" + HouseFunctions.ExtractStreet(h.getAddress(), h.getLocality()));
+      if (home.getFloorArea() > 0) {
+        home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
+        home.setPriceDifference(
+            (int) (((home.getPricePerSqMetre() / home.getPostcodePricePerSqMetre()) * 100) - 100) * -1
+        );
+      }
+      home.setKeywords(keywords);
+
+      if (home.getPrice() > 0) {
+        homeList.add(home);
+      }
     }
+
+//        homeList.sort(Comparator.comparingInt(homeDTO -> homeDTO.getPrice()*-1));
+    homeList.sort(Comparator.comparing(homeDTO -> homeDTO.getPublishedDate()));
+
+    return homeList;
+  }
+
+  @GetMapping("/locations")
+  public List<List> getLocations() {
+    List<List> list = (List<List>) homeRepository.fetchLocations();
+
+    ArrayList locationList = new ArrayList();
+    for (List l : list) {
+      Location location = new Location();
+      location.setAdId((String) l.get(0));
+      location.setLongitude((String) l.get(1));
+      location.setLatitude((String) l.get(2));
+      location.setIsApartment((String) l.get(3));
+      locationList.add(location);
+
+    }
+    return locationList;
+  }
 
 }
