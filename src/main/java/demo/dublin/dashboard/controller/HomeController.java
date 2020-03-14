@@ -58,41 +58,10 @@ public class HomeController {
     List<Home> list = (List<Home>) homeRepository.findAll();
     List<HomeDTO> homeList = new ArrayList<>();
 
-    // ============ Create List of All Median £/m2 and Map of Postcode £/m2
-    List<Integer> allMedianPricePerSqMetre = new ArrayList<>();
-    Map<String, List<Integer>> postcodeMedianPricePerSqMetre = new HashMap<>();
-    for (Home h : list) {
-      if (h.getFloorArea() > 30 && h.getPrice() > 20000) {
-        Integer ppsm = (int) Math.round(h.getPrice() / h.getFloorArea());
-        // all houses
-        allMedianPricePerSqMetre.add(ppsm);
-        // postcodes
-        if (!postcodeMedianPricePerSqMetre.containsKey(h.getPostcode())) {
-          postcodeMedianPricePerSqMetre.put(h.getPostcode(), new ArrayList<>());
-        }
-        postcodeMedianPricePerSqMetre.get(h.getPostcode()).add(ppsm);
-      }
-    }
-
-//        Collections.sort(allMedianPricePerSqMetre);
-//        Long[] numArray = allMedianPricePerSqMetre.toArray(new Long[allMedianPricePerSqMetre.size()]);
-//        double median;
-//        if (allMedianPricePerSqMetre.size() % 2 == 0)
-//            median = ((double)numArray[numArray.length/2] + (double)numArray[numArray.length/2 - 1])/2;
-//        else
-//            median = (double) numArray[numArray.length/2];
-    // ============
-
-    Integer median = HouseFunctions.calculateMedian(allMedianPricePerSqMetre);
-
-    //============= price per sq metre of postcode
-    for (Map.Entry<String, List<Integer>> entry : postcodeMedianPricePerSqMetre.entrySet()) {
-      Collections.sort(entry.getValue());
-    }
-
+    Map<String, List<Integer>> medianPricesPerM2 = hf.calculateMedianOfGroups(list);
 
     for (Home h : list) {
-      HomeDTO home = hf.createHome(h, median, postcodeMedianPricePerSqMetre);
+      HomeDTO home = hf.createHome(h, 12, medianPricesPerM2);
 
       if (home.getPrice() > 0) {
         homeList.add(home);
@@ -108,7 +77,7 @@ public class HomeController {
   @GetMapping("/locations")
   public List<List> getLocations() {
     List<List> list = (List<List>) homeRepository.fetchLocations();
-    System.out.println(list);
+//    System.out.println(list);
     ArrayList locationList = new ArrayList();
     for (List l : list) {
       Location location = new Location();

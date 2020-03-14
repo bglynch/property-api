@@ -9,17 +9,17 @@ import java.util.function.Function;
 @NoArgsConstructor
 public class HouseFunctions {
 
-  public static Integer calculateMedian(List<Integer> list) {
-    Collections.sort(list);
-    Integer[] numArray = list.toArray(new Integer[list.size()]);
-    double median;
-    if (list.size() % 2 == 0)
-      median = ((double) numArray[numArray.length / 2] + (double) numArray[numArray.length / 2 - 1]) / 2;
-    else
-      median = (double) numArray[numArray.length / 2];
-
-    return (int) median;
-  }
+//  public static Integer calculateMedian(List<Integer> list) {
+//    Collections.sort(list);
+//    Integer[] numArray = list.toArray(new Integer[list.size()]);
+//    double median;
+//    if (list.size() % 2 == 0)
+//      median = ((double) numArray[numArray.length / 2] + (double) numArray[numArray.length / 2 - 1]) / 2;
+//    else
+//      median = (double) numArray[numArray.length / 2];
+//
+//    return (int) median;
+//  }
 
   public Function<String, String> toLowerCase = String::toLowerCase;
   public Function<String, String> removePostcode = a -> a.replaceAll("([, ]+dublin \\d+)+", "");

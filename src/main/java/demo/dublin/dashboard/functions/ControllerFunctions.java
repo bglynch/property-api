@@ -9,7 +9,7 @@ import java.util.*;
 @Service
 public class ControllerFunctions {
 
-  public Map<String, Boolean> createKeywordsMap(Home h) {
+  private Map<String, Boolean> createKeywordsMap(Home h) {
     Map<String, Boolean> keywords = new HashMap<>();
     keywords.put("parking", h.isHasParking());
     keywords.put("garden", h.isHasGarden());
@@ -21,9 +21,9 @@ public class ControllerFunctions {
     return keywords;
   }
 
-  public HomeDTO createHome(Home h, Integer median, Map<String, List<Integer>> postcodeMedianPricePerSqMetre) {
+  public HomeDTO createHome(Home h, Integer median, Map<String, List<Integer>> medianPricesPerM2) {
     HomeDTO home = new HomeDTO();
-    List<Integer> postcodeMedPricePerM2 = postcodeMedianPricePerSqMetre.get(h.getPostcode());
+
     home.setAdId(h.getAdId());
     home.setPrice(h.getPrice());
     home.setPublishedDate(h.getPublishedDate());
@@ -40,8 +40,8 @@ public class ControllerFunctions {
     home.setBedrooms(h.getBedrooms());
     home.setFloorArea(h.getFloorArea());
     home.setBerRating(h.getBerRating());
-    home.setPostcodePricePerSqMetre(calculateMedian(postcodeMedPricePerM2));
-    home.setAllPricePerSqMetre(median);
+    home.setPostcodePricePerSqMetre(calculateMedian(medianPricesPerM2.get(h.getPostcode())));
+    home.setAllPricePerSqMetre(calculateMedian(medianPricesPerM2.get("all")));
     home.setStreetView("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + h.getLatitude() + "," + h.getLongitude());
     home.setPropertyPriceRegister("https://propertypriceregisterireland.com/?action=search&county=6&address=" + HouseFunctions.ExtractStreet(h.getAddress(), h.getLocality()));
     if (home.getFloorArea() > 0) {
@@ -55,8 +55,7 @@ public class ControllerFunctions {
     return home;
   }
 
-
-  private Integer calculateMedian(List<Integer> list) {
+  public Integer calculateMedian(List<Integer> list) {
     Collections.sort(list);
     Integer[] numArray = list.toArray(new Integer[list.size()]);
     double median;
@@ -68,5 +67,28 @@ public class ControllerFunctions {
     return (int) median;
   }
 
+  public Map<String, List<Integer>> calculateMedianOfGroups(List<Home> list) {
+    Map<String, List<Integer>> medianPricesPerM2 = new HashMap<>();
+
+    for (Home h : list) {
+      if (h.getFloorArea() > 30 && h.getPrice() > 20000) {
+        Integer ppsm = (int) Math.round(h.getPrice() / h.getFloorArea());
+
+        if (!medianPricesPerM2.containsKey("all")) {
+          medianPricesPerM2.put("all", new ArrayList<>());
+        }
+        if (!medianPricesPerM2.containsKey(h.getPostcode())) {
+          medianPricesPerM2.put(h.getPostcode(), new ArrayList<>());
+        }
+        medianPricesPerM2.get("all").add(ppsm);
+        medianPricesPerM2.get(h.getPostcode()).add(ppsm);
+      }
+    }
+    for (Map.Entry<String, List<Integer>> entry : medianPricesPerM2.entrySet()) {
+      Collections.sort(entry.getValue());
+    }
+
+    return medianPricesPerM2;
+  }
 
 }

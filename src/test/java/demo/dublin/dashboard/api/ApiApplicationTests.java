@@ -1,8 +1,10 @@
 package demo.dublin.dashboard.api;
 
+import demo.dublin.dashboard.functions.ControllerFunctions;
 import demo.dublin.dashboard.functions.HouseFunctions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -17,6 +19,9 @@ import static org.junit.Assert.*;
 //@SpringBootTest
 public class ApiApplicationTests {
 
+	@Autowired
+	ControllerFunctions hf;
+
 	@Test
 	public void contextLoads() {
 	}
@@ -26,7 +31,7 @@ public class ApiApplicationTests {
 		List<Integer> myList = new ArrayList<>(Arrays.asList(2,2,3,4,100000));
 		int[] myArray = {2,2,3,4,100000};
 		HouseFunctions houseFunctions = new HouseFunctions();
-		assertThat(houseFunctions.calculateMedian(myList), is(3));
+		assertThat(hf.calculateMedian(myList), is(3));
 	}
 
 	@Test
