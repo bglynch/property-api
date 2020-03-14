@@ -16,7 +16,6 @@ public class HomeDTO {
     private String postcode;
     private String eircode_rk;
 
-
     private String longitude;
     private String latitude;
 

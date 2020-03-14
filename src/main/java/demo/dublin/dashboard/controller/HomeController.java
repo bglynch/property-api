@@ -1,5 +1,6 @@
 package demo.dublin.dashboard.controller;
 
+import demo.dublin.dashboard.functions.ControllerFunctions;
 import demo.dublin.dashboard.functions.HouseFunctions;
 import demo.dublin.dashboard.models.Home;
 import demo.dublin.dashboard.models.Location;
@@ -23,20 +24,24 @@ public class HomeController {
   @Autowired
   private HomeRepository homeRepository;
 
+  @Autowired
+  private ControllerFunctions hf;
+
   @GetMapping("/localities")
-  public List<String> getLocalities() {
+  public List getLocalities() {
     List localities = homeRepository.getAllLocalitys();
     Collections.sort(localities);
     return localities;
   }
 
   @GetMapping("/postcodes")
-  public List<String> getPostcodes() {
+  public List getPostcodes() {
     List postcodes = homeRepository.getAllPostcodes();
-    Collections.sort(postcodes);
+    Collections.sort(homeRepository.getAllPostcodes());
     return postcodes;
   }
 
+  // TODO: fix this endpoint
   @GetMapping("/v3")
   public List getThings() {
     return homeRepository.fetchThings();
@@ -82,51 +87,12 @@ public class HomeController {
 
     //============= price per sq metre of postcode
     for (Map.Entry<String, List<Integer>> entry : postcodeMedianPricePerSqMetre.entrySet()) {
-//            System.out.println(entry.getKey() + "/" + entry.getValue());
       Collections.sort(entry.getValue());
     }
 
 
     for (Home h : list) {
-      HomeDTO home = new HomeDTO();
-      Map<String, Boolean> keywords =
-          new HashMap<>();
-      keywords.put("parking", h.isHasParking());
-      keywords.put("garden", h.isHasGarden());
-      keywords.put("southFacingRear", h.isHasSouthFacingRear());
-      keywords.put("enSuite", h.isHasEnSuite());
-      keywords.put("underFloorHeating", h.isHasUnderfloorHeating());
-      keywords.put("walkInWardrobe", h.isHasWalkInWardrobe());
-      keywords.put("starterHome", h.isHasStarterHome());
-
-      List<Integer> postcodeMedPricePerM2 = postcodeMedianPricePerSqMetre.get(h.getPostcode());
-      home.setAdId(h.getAdId());
-      home.setPrice(h.getPrice());
-      home.setPublishedDate(h.getPublishedDate());
-      home.setUrl(h.getUrl());
-      home.setAddress(h.getAddress());
-      home.setLocality(h.getLocality());
-      home.setPostcode(h.getPostcode());
-      home.setEircode_rk(h.getEircode_rk());
-      home.setLongitude(h.getLongitude());
-      home.setLatitude(h.getLatitude());
-      home.setPrimaryPhoto(h.getPrimaryPhoto());
-      home.setPropertyType(h.getPropertyType());
-      home.setBathrooms(h.getBathrooms());
-      home.setBedrooms(h.getBedrooms());
-      home.setFloorArea(h.getFloorArea());
-      home.setBerRating(h.getBerRating());
-      home.setPostcodePricePerSqMetre(HouseFunctions.calculateMedian(postcodeMedPricePerM2));
-      home.setAllPricePerSqMetre(median);
-      home.setStreetView("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + h.getLatitude() + "," + h.getLongitude());
-      home.setPropertyPriceRegister("https://propertypriceregisterireland.com/?action=search&county=6&address=" + HouseFunctions.ExtractStreet(h.getAddress(), h.getLocality()));
-      if (home.getFloorArea() > 0) {
-        home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
-        home.setPriceDifference(
-            (int) (((home.getPricePerSqMetre() / home.getPostcodePricePerSqMetre()) * 100) - 100) * -1
-        );
-      }
-      home.setKeywords(keywords);
+      HomeDTO home = hf.createHome(h, median, postcodeMedianPricePerSqMetre);
 
       if (home.getPrice() > 0) {
         homeList.add(home);
@@ -142,7 +108,7 @@ public class HomeController {
   @GetMapping("/locations")
   public List<List> getLocations() {
     List<List> list = (List<List>) homeRepository.fetchLocations();
-
+    System.out.println(list);
     ArrayList locationList = new ArrayList();
     for (List l : list) {
       Location location = new Location();
@@ -155,5 +121,7 @@ public class HomeController {
     }
     return locationList;
   }
+
+
 
 }
