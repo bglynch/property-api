@@ -21,9 +21,8 @@ public class ControllerFunctions {
     return keywords;
   }
 
-  public HomeDTO createHome(Home h, Integer median, Map<String, List<Integer>> medianPricesPerM2) {
+  public HomeDTO createHome(Home h, Map<String, Integer> medianPricesPerM2) {
     HomeDTO home = new HomeDTO();
-
     home.setAdId(h.getAdId());
     home.setPrice(h.getPrice());
     home.setPublishedDate(h.getPublishedDate());
@@ -40,10 +39,10 @@ public class ControllerFunctions {
     home.setBedrooms(h.getBedrooms());
     home.setFloorArea(h.getFloorArea());
     home.setBerRating(h.getBerRating());
-    home.setPostcodePricePerSqMetre(calculateMedian(medianPricesPerM2.get(h.getPostcode())));
-    home.setAllPricePerSqMetre(calculateMedian(medianPricesPerM2.get("all")));
+    home.setPostcodePricePerSqMetre(medianPricesPerM2.get(h.getPostcode()));
+    home.setAllPricePerSqMetre(medianPricesPerM2.get("all"));
     home.setStreetView("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + h.getLatitude() + "," + h.getLongitude());
-    home.setPropertyPriceRegister("https://propertypriceregisterireland.com/?action=search&county=6&address=" + HouseFunctions.ExtractStreet(h.getAddress(), h.getLocality()));
+    home.setPropertyPriceRegister("https://propertypriceregisterireland.com/?action=search&county=6&address=" + ExtractStreet(h.getAddress(), h.getLocality()));
     if (home.getFloorArea() > 0) {
       home.setPricePerSqMetre(Math.round(home.getPrice() / home.getFloorArea()));
       home.setPriceDifference(
@@ -67,28 +66,51 @@ public class ControllerFunctions {
     return (int) median;
   }
 
-  public Map<String, List<Integer>> calculateMedianOfGroups(List<Home> list) {
-    Map<String, List<Integer>> medianPricesPerM2 = new HashMap<>();
+  public Map<String, Integer> calculateMedianOfGroups(List<Home> list) {
+    Map<String, List<Integer>> allMedianPricesPerM2 = new HashMap<>();
 
     for (Home h : list) {
       if (h.getFloorArea() > 30 && h.getPrice() > 20000) {
         Integer ppsm = (int) Math.round(h.getPrice() / h.getFloorArea());
 
-        if (!medianPricesPerM2.containsKey("all")) {
-          medianPricesPerM2.put("all", new ArrayList<>());
+        if (!allMedianPricesPerM2.containsKey("all")) {
+          allMedianPricesPerM2.put("all", new ArrayList<>());
         }
-        if (!medianPricesPerM2.containsKey(h.getPostcode())) {
-          medianPricesPerM2.put(h.getPostcode(), new ArrayList<>());
+        if (!allMedianPricesPerM2.containsKey(h.getPostcode())) {
+          allMedianPricesPerM2.put(h.getPostcode(), new ArrayList<>());
         }
-        medianPricesPerM2.get("all").add(ppsm);
-        medianPricesPerM2.get(h.getPostcode()).add(ppsm);
+        allMedianPricesPerM2.get("all").add(ppsm);
+        allMedianPricesPerM2.get(h.getPostcode()).add(ppsm);
       }
     }
-    for (Map.Entry<String, List<Integer>> entry : medianPricesPerM2.entrySet()) {
+    for (Map.Entry<String, List<Integer>> entry : allMedianPricesPerM2.entrySet()) {
       Collections.sort(entry.getValue());
+    }
+
+    Map<String, Integer> medianPricesPerM2 = new HashMap<>();
+    for (Map.Entry<String, List<Integer>> entry : allMedianPricesPerM2.entrySet()) {
+      medianPricesPerM2.put(entry.getKey(), calculateMedian(entry.getValue()));
     }
 
     return medianPricesPerM2;
   }
 
+  public String ExtractStreet(String address, String locality) {
+    address = address.replaceAll("\\s{2,}", " ");
+    address = address.split("[, ]+" + locality + "(?! (Road|Avenue))")[0];
+    address = address.replaceAll("[, ]+$", "");
+    if (address.contains(",")) {
+      address = address.split(",")[address.split(",").length - 1].trim();    // get last item in address
+    }
+    address = address.replaceAll("'", "");
+    return ExtractStreet(address);
+  }
+
+  public String ExtractStreet(String address) {
+    address = address.replaceAll("^\\d{1,3}(-\\d{1,3})? ", ""); // remove number from start of string
+    address = address.replaceAll("Apartments", "").trim();      // remove number from start of string
+    address = address.replaceAll("\\\\", "").trim();            // remove number from start of string
+    address = address.replaceAll("(\\(.+\\))", "").trim();      // remove number from start of string
+    return address;
+  }
 }

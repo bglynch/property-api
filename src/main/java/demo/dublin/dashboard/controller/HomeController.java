@@ -54,14 +54,13 @@ public class HomeController {
 
   @GetMapping("/lite")
   public List<HomeDTO> getAllMin() {
-
-    List<Home> list = (List<Home>) homeRepository.findAll();
+    List<Home> list = homeRepository.findAll();
     List<HomeDTO> homeList = new ArrayList<>();
 
-    Map<String, List<Integer>> medianPricesPerM2 = hf.calculateMedianOfGroups(list);
+    Map<String, Integer> medianPricesPerM2 = hf.calculateMedianOfGroups(list);
 
     for (Home h : list) {
-      HomeDTO home = hf.createHome(h, 12, medianPricesPerM2);
+      HomeDTO home = hf.createHome(h, medianPricesPerM2);
 
       if (home.getPrice() > 0) {
         homeList.add(home);
