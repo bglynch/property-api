@@ -18,6 +18,7 @@ public class ControllerFunctions {
     keywords.put("underFloorHeating", h.isHasUnderfloorHeating());
     keywords.put("walkInWardrobe", h.isHasWalkInWardrobe());
     keywords.put("starterHome", h.isHasStarterHome());
+    keywords.put("nearLuasLine", h.isNearLuasLine());
     return keywords;
   }
 

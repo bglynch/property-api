@@ -15,12 +15,11 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
+
 public class ApiApplicationTests {
 
 	@Autowired
-	ControllerFunctions hf;
+	private ControllerFunctions hf;
 
 	@Test
 	public void contextLoads() {
@@ -30,7 +29,6 @@ public class ApiApplicationTests {
 	public void doesTheAddressHaveAPostcode() {
 		List<Integer> myList = new ArrayList<>(Arrays.asList(2,2,3,4,100000));
 		int[] myArray = {2,2,3,4,100000};
-		HouseFunctions houseFunctions = new HouseFunctions();
 		assertThat(hf.calculateMedian(myList), is(3));
 	}
 

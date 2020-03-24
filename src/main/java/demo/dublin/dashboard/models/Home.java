@@ -67,6 +67,8 @@ public class Home {
     boolean hasUnderfloorHeating;
     @Column(columnDefinition = "boolean default false")
     boolean hasStarterHome;
+    @Column(columnDefinition = "boolean default false")
+    boolean nearLuasLine;
 
     @Column(columnDefinition = "boolean default false")
     boolean manuallyUpdated;

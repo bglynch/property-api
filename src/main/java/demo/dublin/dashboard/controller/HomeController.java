@@ -76,7 +76,6 @@ public class HomeController {
   @GetMapping("/locations")
   public List<List> getLocations() {
     List<List> list = (List<List>) homeRepository.fetchLocations();
-//    System.out.println(list);
     ArrayList locationList = new ArrayList();
     for (List l : list) {
       Location location = new Location();
